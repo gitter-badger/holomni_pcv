@@ -3,7 +3,7 @@
 #//////////////////////////////////////////////////////////////////
 
 holomni_dir = $(top_srcdir)/src
-matrix_dir = $(top_srcdir)/src/pr/include
+matrix_dir = $(top_srcdir)/src/matrix
 
 
 libholomni_pcvincludedir = $(includedir)/holomni_pcv
@@ -39,11 +39,11 @@ libholomni_pcv_la_SOURCES = \
 	Caster.cpp\
 	Ctrl.cpp\
 	Traj3.cpp\
-	pr/src/matrix/PrMatrix.cpp\
-	pr/src/matrix/PrVector.cpp
+	matrix/PrMatrix.cpp\
+	matrix/PrVector.cpp
 
 install: install-am
-	mkdir /usr/local/include/holomni_pcv/matrix; mv /usr/local/include/holomni_pcv/PrMatrix.h /usr/local/include/holomni_pcv/matrix/; mv /usr/local/include/holomni_pcv/PrVector.h /usr/local/include/holomni_pcv/matrix/
+	mkdir -p /usr/local/include/holomni_pcv/matrix; mv /usr/local/include/holomni_pcv/PrMatrix.h /usr/local/include/holomni_pcv/matrix/; mv /usr/local/include/holomni_pcv/PrVector.h /usr/local/include/holomni_pcv/matrix/
 	
 #///////////////////////////////////////////////////////////////////////////////////////////////////
 

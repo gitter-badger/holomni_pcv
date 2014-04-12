@@ -15,7 +15,7 @@
 #ifndef _PrMatrix_h_
 #define _PrMatrix_h_
 
-#include "PrGlobalDefn.h"
+#include "../PrGlobalDefn.h"
 #include "PrVector.h"
 
 class PrMatrix

@@ -18,3 +18,10 @@ build
 *.ko
 *.mod.c
 *.order
+*.Plo
+Makefile
+Makefile.in
+autom4te.cache/requests
+config.status
+libtool
+.deps/
