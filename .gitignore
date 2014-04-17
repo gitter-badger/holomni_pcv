@@ -21,7 +21,7 @@ build
 *.Plo
 Makefile
 Makefile.in
-autom4te.cache/requests
+autom4te.cache/
 config.status
 libtool
 .deps/

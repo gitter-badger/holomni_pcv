@@ -95,8 +95,8 @@ typedef MyDequeIterator<Motion *> MotionIter;
 #define GET_mx   MotionIter &mx = Motion::NextGet(); // get Motion Next
 */
 
-#define REV2RAD  (6.28318530718)
-#define DEG2RAD  (0.0174532925199)
+#define REV2RAD_  (6.28318530718)
+#define DEG2RAD_  (0.0174532925199)
 
 // PROTOTYPES
 TrajMode const  traj_name2mode( char *name );
