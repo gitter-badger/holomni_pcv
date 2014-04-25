@@ -12,8 +12,8 @@
  * 11/12/97: K.C. Chang: created.
  */
 
-#include "matrix/PrVector.h"
-#include "matrix/PrMatrix.h"
+#include "PrVector.h"
+#include "PrMatrix.h"
 
 #include <assert.h>
 #include <math.h>

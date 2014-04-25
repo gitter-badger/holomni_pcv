@@ -14,7 +14,7 @@
 
 #include <stdio.h>
 #include <assert.h>
-#include "matrix/PrMatrix.h"
+#include "PrMatrix.h"
 
 
 PrMatrix::PrMatrix(int _row,int _col)

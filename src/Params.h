@@ -88,7 +88,7 @@ typedef struct Home_Params
 { 
   //( 1*6802 +  20),0,( 0*6802 +  85),0
   //(-1*6802 +  75),0,(-2*6802 +  80),0
-  //Float offset[8];
+  Float offset[8];
   Float e_err; //3000
   Float v_des; //6000
   Float KPz_; //2.0
