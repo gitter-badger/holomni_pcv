@@ -8,7 +8,7 @@ PCV::PCV( string config_filename, int step_freq ) : ctrl(NULL)
   /*   Parse Yaml Files */
   /////////////////////////
   
-  MSG("Beginning to read config files.\n");	
+  //MSG("Beginning to read config files.\n");	
   
   ifstream fin(config_filename.c_str());
   if (fin.fail())
@@ -81,7 +81,7 @@ PCV::PCV( string config_filename, int step_freq ) : ctrl(NULL)
   doc["filter"]["FXD"] >> params.filter.FXD;  
   
   
-  MSG("Finished reading config files.\n");
+  //MSG("Finished reading config files.\n");
   
   vector<Float> init_x(3,0.0);
     
