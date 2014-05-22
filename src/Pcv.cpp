@@ -1,6 +1,20 @@
 #include "Pcv.h"
-
 using namespace std;
+
+void ReadYamlDoc(string path_to_file, YAML::Node & doc)
+{       
+        ifstream fin(path_to_file.c_str());
+        if (fin.fail())
+        {               
+                printf("Could not read %s \n", path_to_file.c_str());   
+        }
+
+        YAML::Parser parser(fin);
+        
+        parser.GetNextDocument(doc);
+        fin.close();
+        return;
+}
 
 PCV::PCV( string config_filename, int step_freq ) : ctrl(NULL)
 {  
@@ -10,16 +24,8 @@ PCV::PCV( string config_filename, int step_freq ) : ctrl(NULL)
   
   //MSG("Beginning to read config files.\n");	
   
-  ifstream fin(config_filename.c_str());
-  if (fin.fail())
-  {		
-    MSG("could not read %s \n", config_filename.c_str());	
-  }
   YAML::Node doc;
-  YAML::Parser parser(fin);
-  
-  parser.GetNextDocument(doc);
-  fin.close();
+  ReadYamlDoc(config_filename.c_str(),doc);
   
   Float num,den;
   string name;  
