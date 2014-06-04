@@ -17,7 +17,7 @@ using namespace std;
 class PCV
 {
  public:
-  PCV( string config_filename, int step_freq );
+  PCV( YAML::Node& doc, int step_freq );
 
  
  ~PCV()

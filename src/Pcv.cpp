@@ -16,7 +16,7 @@ void ReadYamlDoc(string path_to_file, YAML::Node & doc)
         return;
 }
 
-PCV::PCV( string config_filename, int step_freq ) : ctrl(NULL)
+PCV::PCV(YAML::Node &doc, int step_freq ) : ctrl(NULL)
 {  
   /////////////////////////
   /*   Parse Yaml Files */
@@ -24,8 +24,8 @@ PCV::PCV( string config_filename, int step_freq ) : ctrl(NULL)
   
   //MSG("Beginning to read config files.\n");	
   
-  YAML::Node doc;
-  ReadYamlDoc(config_filename.c_str(),doc);
+  //YAML::Node doc;
+  //ReadYamlDoc(config_filename.c_str(),doc);
   
   Float num,den;
   string name;  

@@ -5,19 +5,22 @@
 #include "Pcv.h"
 #include <mcheck.h> /* Header file to include mtrace related functions */
 #include <stdlib.h>
-
+#include <yaml-cpp/yaml.h>
 int main()
 {
   //mtrace(); /* This starts memory tracing. */
   printf("Starting PCV Test..\n");
-  
-  PCV * pcv = new PCV("/home/meka/mekabot/m3qa/robot_config/mb1/pcv_meka_b1r1.yml", 1000);
+  std::ifstream fin("/home/meka/mekabot/m3qa/robot_config/mb1/pcv_meka_b1r1.yml");
+  YAML::Parser parser(fin);
+  YAML::Node doc;
+  parser.GetNextDocument(doc);
+  PCV * pcv = new PCV(doc, 1000);
   
   delete pcv;
   
   pcv = NULL;
   
-  pcv = new PCV("/home/meka/mekabot/m3qa/robot_config/mb1/pcv_meka_b1r1.yml", 1000);
+  pcv = new PCV(doc, 1000);
   
   delete pcv;
     
