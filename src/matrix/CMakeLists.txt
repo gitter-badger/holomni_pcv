@@ -6,5 +6,5 @@ file(GLOB sources ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
 file(GLOB headers ${CMAKE_CURRENT_SOURCE_DIR}/*.h)
 
 add_library(${LIBNAME} SHARED ${sources})
-install(TARGETS ${LIBNAME} DESTINATION lib)
+install(TARGETS ${LIBNAME} DESTINATION lib COMPONENT library)
 install(FILES ${headers} DESTINATION include/${PROJECT_NAME})
