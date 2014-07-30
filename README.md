@@ -1,5 +1,5 @@
-The Holomni library 
+###The Holomni library 
 
-Used on the Meka Robot @ Ensta
+This library is used to control the B1 base of the Meka robot at Ensta ParisTech
 
-Changelog : Now a Cmake project
+> Changelog : Now a Cmake project
