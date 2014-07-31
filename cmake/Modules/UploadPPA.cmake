@@ -157,6 +157,9 @@ configure_file(${CPACK_RESOURCE_FILE_LICENSE} ${debian_copyright} COPYONLY)
 ##############################################################################
 # debian/rules
 set(debian_rules ${DEBIAN_SOURCE_DIR}/debian/rules)
+
+
+if(OLD_RULES)
 file(WRITE ${debian_rules}
   "#!/usr/bin/make -f\n"
   "\n"
@@ -216,6 +219,7 @@ foreach(component ${CPACK_COMPONENTS_ALL})
   endif(NOT CPACK_COMPONENT_${COMPONENT}_BINARY_INDEP)
 endforeach(component)
 
+
 file(APPEND ${debian_rules}
   "\n"
   "binary-indep: build-indep\n"
@@ -245,6 +249,14 @@ file(APPEND ${debian_rules}
   ".PHONY: binary binary-arch binary-indep clean\n"
   )
 
+
+else()
+file(WRITE ${debian_rules}
+"#!/usr/bin/make -f\n"
+"%:\n"
+"\tdh  $@ --buildsystem=cmake\n"
+)
+endif(OLD_RULES)
 execute_process(COMMAND chmod +x ${debian_rules})
 
 ##############################################################################

@@ -3,7 +3,7 @@ project(holomni-pcv)
 set(LIBNAME "holomni_pcv")
 SET(MAJOR_VERSION "1")
 SET(MINOR_VERSION "1")
-SET(PATCH_VERSION "6")
+SET(PATCH_VERSION "8")
 set(M3CORE_VERSION
   ${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION})
   
@@ -69,7 +69,7 @@ SET(CPACK_SOURCE_PACKAGE_FILE_NAME "${CMAKE_PROJECT_NAME}_${MAJOR_VERSION}.${MIN
 set(CPACK_STRIP_FILES TRUE)
 set(PPA_DEBIAN_VERSION "0ubuntu1")
 #dependencies for this service menu
-set(CPACK_DEBIAN_PACKAGE_BUILD_DEPENDS cmake bzr git pkg-config devscripts libyaml-cpp0.3 libyaml-cpp0.3-dev)
+set(CPACK_DEBIAN_PACKAGE_BUILD_DEPENDS cmake bzr git pkg-config devscripts libyaml-cpp0.3 libyaml-cpp0.3-dev dh-make)
 set(CPACK_DEBIAN_PACKAGE_DEPENDS libyaml-cpp0.3 libyaml-cpp0.3-dev)
 #SET(CPACK_DEBIAN_PACKAGE_DEPENDS "python2.7,swig,moc,libeigen3-dev,libprotobuf-dev,protobuf-compiler,libboost-dev,python-dev,python-protobuf,python-matplotlib,python-yaml,python-gnuplot,python-scipy,python-sip-dev,python-sip")
  
