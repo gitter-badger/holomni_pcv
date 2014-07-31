@@ -35,7 +35,7 @@
 # version number from the changelog and the version number set in
 # CPACK_PACKAGE_VERSION.  If they mismatch the creation of the package fails.
 #
-##
+## A.Hoarau : CHANGELOG_MESSAGE can be used to pass a custom changelog message
 # Check packages
 #
 # ./configure -DENABLE_PPA=On
@@ -46,7 +46,7 @@
 # debuild -i -us -uc -sa -b
 #
 # Check the lintian warnings!
-#
+# 
 ##
 # TODO
 # I plan to add support for git dch (from git-buildpackage) to auto generate
@@ -57,6 +57,7 @@ find_program(DEBUILD_EXECUTABLE debuild)
 find_program(DPUT_EXECUTABLE dput)
 
 if(NOT DEBUILD_EXECUTABLE OR NOT DPUT_EXECUTABLE)
+  message(WARNING "Debuild or dput not installed, please run sudo apt-get install devscripts")
   return()
 endif(NOT DEBUILD_EXECUTABLE OR NOT DPUT_EXECUTABLE)
 
@@ -262,7 +263,12 @@ if(NOT CPACK_DEBIAN_RESOURCE_FILE_CHANGELOG)
 endif()
 
 # TODO add support for git dch (git-buildpackage)
-
+if(CHANGELOG_MESSAGE)
+	set(output_changelog_msg ${CHANGELOG_MESSAGE})
+else()
+	set(output_changelog_msg "Package created with CMake")
+endif(CHANGELOG_MESSAGE)
+message(STATUS "Changelog message : \"${output_changelog_msg}\"")
 if(EXISTS ${CPACK_DEBIAN_RESOURCE_FILE_CHANGELOG})
   configure_file(${CPACK_DEBIAN_RESOURCE_FILE_CHANGELOG} ${debian_changelog} COPYONLY)
 
@@ -278,7 +284,7 @@ if(EXISTS ${CPACK_DEBIAN_RESOURCE_FILE_CHANGELOG})
       OUTPUT_STRIP_TRAILING_WHITESPACE)
     file(WRITE ${debian_changelog}
       "${CPACK_DEBIAN_PACKAGE_NAME} (${DEBIAN_PACKAGE_VERSION}) ${DISTRI}; urgency=low\n\n"
-      "  * Package created with CMake\n\n"
+      "  * ${output_changelog_msg}\n\n"
       " -- ${CPACK_DEBIAN_PACKAGE_MAINTAINER}  ${DATE_TIME}\n\n"
       )
     file(APPEND ${debian_changelog} ${debian_changelog_content})
@@ -295,9 +301,10 @@ else()
     OUTPUT_STRIP_TRAILING_WHITESPACE)
   file(WRITE ${debian_changelog}
     "${CPACK_DEBIAN_PACKAGE_NAME} (${DEBIAN_PACKAGE_VERSION}) ${DISTRI}; urgency=low\n\n"
-    "  * Package built with CMake\n\n"
+    "  * ${output_changelog_msg}\n\n"
     " -- ${CPACK_DEBIAN_PACKAGE_MAINTAINER}  ${DATE_TIME}\n"
     )
+   #configure_file(${debian_changelog} ${CPACK_DEBIAN_RESOURCE_FILE_CHANGELOG}  COPYONLY)
 endif()
 
 ##########################################################################
@@ -320,7 +327,7 @@ set(CPACK_SOURCE_IGNORE_FILES
 set(package_file_name "${CPACK_DEBIAN_PACKAGE_NAME}_${CPACK_PACKAGE_VERSION}")
 
 file(WRITE "${CMAKE_BINARY_DIR}/Debian/cpack.cmake"
-  "set(CPACK_GENERATOR TBZ2)\n"
+  "set(CPACK_GENERATOR TGZ)\n"
   "set(CPACK_PACKAGE_NAME \"${CPACK_DEBIAN_PACKAGE_NAME}\")\n"
   "set(CPACK_PACKAGE_VERSION \"${CPACK_PACKAGE_VERSION}\")\n"
   "set(CPACK_PACKAGE_FILE_NAME \"${package_file_name}.orig\")\n"
@@ -329,7 +336,7 @@ file(WRITE "${CMAKE_BINARY_DIR}/Debian/cpack.cmake"
   "set(CPACK_INSTALLED_DIRECTORIES \"${CPACK_SOURCE_INSTALLED_DIRECTORIES}\")\n"
   )
 
-set(orig_file "${CMAKE_BINARY_DIR}/Debian/${package_file_name}.orig.tar.bz2")
+set(orig_file "${CMAKE_BINARY_DIR}/Debian/${package_file_name}.orig.tar.gz")
 
 add_custom_command(OUTPUT ${orig_file}
   COMMAND cpack --config ${CMAKE_BINARY_DIR}/Debian/cpack.cmake
@@ -343,13 +350,19 @@ set(DEB_SOURCE_CHANGES
   )
 
 add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/Debian/${DEB_SOURCE_CHANGES}
-  COMMAND ${DEBUILD_EXECUTABLE} -S
+  COMMAND ${DEBUILD_EXECUTABLE} -S -sa
   WORKING_DIRECTORY ${DEBIAN_SOURCE_DIR}
   )
-add_custom_target(debuild ALL DEPENDS ${CMAKE_BINARY_DIR}/Debian/${DEB_SOURCE_CHANGES} ${tarfile})
+add_custom_target(debuild ALL DEPENDS tarfile ${orig_file} ${CMAKE_BINARY_DIR}/Debian/${DEB_SOURCE_CHANGES} )
 ##############################################################################
 # dput ppa:your-lp-id/ppa <source.changes>
- add_custom_target(dput ${DPUT_EXECUTABLE} ${DPUT_HOST} ${DEB_SOURCE_CHANGES}
-   ALL DEPENDS ${tarfile} ${CMAKE_BINARY_DIR}/Debian/${DEB_SOURCE_CHANGES} 
+message(STATUS "Upload PPA is ${UPLOAD_PPA}")
+if(UPLOAD_PPA)
+ add_custom_target(dput ALL
+   COMMAND ${DPUT_EXECUTABLE} ${DPUT_HOST} ${DEB_SOURCE_CHANGES}
+   DEPENDS debuild
    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/Debian
    )
+endif()
+
+
