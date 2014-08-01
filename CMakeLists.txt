@@ -2,8 +2,8 @@ cmake_minimum_required(VERSION 2.8)
 project(holomni-pcv)
 set(LIBNAME "holomni_pcv")
 SET(MAJOR_VERSION "1")
-SET(MINOR_VERSION "1")
-SET(PATCH_VERSION "9-1")
+SET(MINOR_VERSION "2")
+SET(PATCH_VERSION "0")
 set(M3CORE_VERSION
   ${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION})
   
