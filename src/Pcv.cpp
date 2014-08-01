@@ -7,7 +7,7 @@ template < class _T >
                         value = input.as<_T>();
                         //input >> value;
                 } catch (YAML::Exception &e) {
-                        ROS_ERROR_STREAM("Error converting from YAML! " << e.what());
+                       std::cout<<"Error converting from YAML! " << e.what()<<std::endl;
 		}
 	}
 #endif
