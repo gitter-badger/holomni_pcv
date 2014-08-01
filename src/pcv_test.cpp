@@ -10,12 +10,13 @@ int main()
 {
   //mtrace(); /* This starts memory tracing. */
   printf("Starting PCV Test..\n");
-  std::string fin("/home/meka/mekabot/m3qa/robot_config/mb1/pcv_meka_b1r1.yml");
 #ifndef YAMLCPP_05
+  std::ifstream fin("/home/meka/mekabot/m3qa/robot_config/mb1/pcv_meka_b1r1.yml");
   YAML::Parser parser(fin);
   YAML::Node doc;
   parser.GetNextDocument(doc);
 #else
+  std::string fin("/home/meka/mekabot/m3qa/robot_config/mb1/pcv_meka_b1r1.yml");
   YAML::Node doc = YAML::LoadFile(fin);
 #endif
   PCV * pcv = new PCV(doc, 1000);
