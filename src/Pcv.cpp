@@ -1,32 +1,21 @@
 #include "Pcv.h"
 using namespace std;
-
-void ReadYamlDoc(string path_to_file, YAML::Node & doc)
-{       
-        ifstream fin(path_to_file.c_str());
-        if (fin.fail())
-        {               
-                printf("Could not read %s \n", path_to_file.c_str());   
-        }
-
-        YAML::Parser parser(fin);
-        
-        parser.GetNextDocument(doc);
-        fin.close();
-        return;
-}
-
+#ifdef YAMLCPP_05
+template < class _T >
+        void operator >>(const YAML::Node& input, _T& value) {
+                try {
+                        value = input.as<_T>();
+                        //input >> value;
+                } catch (YAML::Exception &e) {
+                        ROS_ERROR_STREAM("Error converting from YAML! " << e.what());
+		}
+	}
+#endif
 PCV::PCV(YAML::Node &doc, int step_freq ) : ctrl(NULL)
 {  
   /////////////////////////
   /*   Parse Yaml Files */
   /////////////////////////
-  
-  //MSG("Beginning to read config files.\n");	
-  
-  //YAML::Node doc;
-  //ReadYamlDoc(config_filename.c_str(),doc);
-  
   Float num,den;
   string name;  
   Float temp;
