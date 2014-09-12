@@ -5,10 +5,9 @@
 find_package(PkgConfig REQUIRED)
 #find_package(YamlCpp  REQUIRED)
 pkg_check_modules(YAMLCPP REQUIRED yaml-cpp)
-if(NOT ${YAMLCPP_VERSION} VERSION_LESS "0.5")
-add_definitions(-DYAMLCPP_05)
-endif(NOT ${YAMLCPP_VERSION} VERSION_LESS "0.5")
-link_directories(${YAMLCPP_LIBRARY_DIRS})
+if(NOT ${YAMLCPP_VERSION} VERSION_GREATER "0.4")
+add_definitions(-DYAMLCPP_03)
+endif()
 
 include_directories(${YAMLCPP_INCLUDE_DIRS} ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/matrix)
 

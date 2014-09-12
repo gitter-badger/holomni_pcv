@@ -8,11 +8,19 @@
 #include <fstream>
 #include "Ctrl.h"
 #include "yaml-cpp/yaml.h"
-
-
 #define MSG  printf
 
-using namespace std;
+#ifndef YAMLCPP_03
+template < class _T >
+        void operator >>(const YAML::Node& input, _T& value) {
+                try {
+                        value = input.as<_T>();
+                        //input >> value;
+                } catch (YAML::Exception &e) {
+                       std::cout<<"Error converting from YAML! " << e.what()<<std::endl;
+		}
+	}
+#endif
 
 class PCV
 {

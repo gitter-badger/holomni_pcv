@@ -3,14 +3,12 @@ project(holomni-pcv)
 set(LIBNAME "holomni_pcv")
 SET(MAJOR_VERSION "1")
 SET(MINOR_VERSION "2")
-SET(PATCH_VERSION "2")
+SET(PATCH_VERSION "3")
 set(M3CORE_VERSION
   ${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION})
   
 # Options
-#set(DCMAKE_BUILD_TYPE "Release")
-
-set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Wall -Wno-reorder")
+set(DCMAKE_BUILD_TYPE "Release")
 set(CMAKE_CXX_FLAGS_DEBUG "-O0 -ggdb")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 
@@ -59,7 +57,7 @@ SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "This package is used to control the B1 ba
 SET(CPACK_PACKAGE_VENDOR "Meka Robotics LLC, Inria, Ensta ParisTech")
 SET(CPACK_DEBIAN_PACKAGE_MAINTAINER "Antoine Hoarau <hoarau.robotics@gmail.com>")
 SET(CPACK_PACKAGE_CONTACT "Antoine Hoarau <hoarau.robotics@gmail.com>")
-set(CPACK_DEBIAN_PACKAGE_HOMEPAGE "https://bitbucket.org/ensta/holomni_pcv")
+set(CPACK_DEBIAN_PACKAGE_HOMEPAGE "https://github.com/ahoarau/holomni_pcv")
 SET(CPACK_PACKAGE_VERSION_MAJOR "${MAJOR_VERSION}")
 SET(CPACK_PACKAGE_VERSION_MINOR "${MINOR_VERSION}")
 SET(CPACK_PACKAGE_VERSION_PATCH "${PATCH_VERSION}")

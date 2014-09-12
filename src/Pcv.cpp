@@ -1,16 +1,6 @@
 #include "Pcv.h"
 using namespace std;
-#ifdef YAMLCPP_05
-template < class _T >
-        void operator >>(const YAML::Node& input, _T& value) {
-                try {
-                        value = input.as<_T>();
-                        //input >> value;
-                } catch (YAML::Exception &e) {
-                       std::cout<<"Error converting from YAML! " << e.what()<<std::endl;
-		}
-	}
-#endif
+
 PCV::PCV(YAML::Node &doc, int step_freq ) : ctrl(NULL)
 {  
   /////////////////////////

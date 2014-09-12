@@ -10,7 +10,7 @@ int main()
 {
   //mtrace(); /* This starts memory tracing. */
   printf("Starting PCV Test..\n");
-#ifndef YAMLCPP_05
+#ifdef YAMLCPP_03
   std::ifstream fin("/home/meka/mekabot/m3qa/robot_config/mb1/pcv_meka_b1r1.yml");
   YAML::Parser parser(fin);
   YAML::Node doc;
