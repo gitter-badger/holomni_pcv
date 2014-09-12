@@ -3,7 +3,7 @@ project(holomni-pcv)
 set(LIBNAME "holomni_pcv")
 SET(MAJOR_VERSION "1")
 SET(MINOR_VERSION "2")
-SET(PATCH_VERSION "3")
+SET(PATCH_VERSION "8")
 set(M3CORE_VERSION
   ${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION})
   
@@ -27,9 +27,9 @@ OPTION(UPLOAD_PPA "Enable PPA upload" FALSE)
 OPTION(CHANGELOG_MESSAGE "Set the changelog message" OFF)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
-
+if(NOT ENABLE_PPA)
 add_subdirectory(src)
-
+endif()
 ######## Debian #######
 
 #### Package Generation
@@ -65,12 +65,15 @@ SET(CPACK_PACKAGE_FILE_NAME "${CMAKE_PROJECT_NAME}_${MAJOR_VERSION}.${MINOR_VERS
 SET(CPACK_SOURCE_PACKAGE_FILE_NAME "${CMAKE_PROJECT_NAME}_${MAJOR_VERSION}.${MINOR_VERSION}.${CPACK_PACKAGE_VERSION_PATCH}")
 
 set(CPACK_STRIP_FILES TRUE)
-set(PPA_DEBIAN_VERSION "0ubuntu1")
+set(CPACK_DEBIAN_PACKAGE_ARCHITECTURE "any") # can be build on any system
+#set(PPA_DEBIAN_VERSION "0ubuntu1")
 #dependencies for this service menu
 set(CPACK_DEBIAN_PACKAGE_BUILD_DEPENDS cmake bzr git pkg-config devscripts libyaml-cpp-dev dh-make libboost-dev)
 set(CPACK_DEBIAN_PACKAGE_DEPENDS libyaml-cpp-dev)
 #SET(CPACK_DEBIAN_PACKAGE_DEPENDS "python2.7,swig,moc,libeigen3-dev,libprotobuf-dev,protobuf-compiler,libboost-dev,python-dev,python-protobuf,python-matplotlib,python-yaml,python-gnuplot,python-scipy,python-sip-dev,python-sip")
- 
+
+set(CPACK_DISTRIB_TARGET "utopic" "trusty" "saucy" "raring" "quantal")
+ # See ~/.dput.cd
 set(DPUT_HOST hoarau-robotics)
 set(CPACK_DEBIAN_UPDATE_CHANGELOG TRUE)
 #SET(CPACK_DEBIAN_PACKAGE_PRIORITY "optional")
@@ -80,7 +83,6 @@ set(CPACK_DEBIAN_UPDATE_CHANGELOG TRUE)
 #SET(CPACK_COMPONENTS_ALL Libraries ApplicationData)
 INCLUDE(CPack)
 if(ENABLE_PPA OR UPLOAD_PPA)
-    set(CPACK_DEBIAN_PACKAGE_ARCHITECTURE "any") # can be build on any system
     include(UploadPPA)
 endif()
 

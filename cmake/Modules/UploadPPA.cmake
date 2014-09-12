@@ -40,7 +40,7 @@
 #
 # ./configure -DENABLE_PPA=On
 # make dput
-# cd build/Debian
+# cd build/Debian/${DISTRI}
 # dpkg-source -x vobsub2srt_1.0pre4-ppa1.dsc
 # cd vobsub2srt-1.0pre4/
 # debuild -i -us -uc -sa -b
@@ -60,6 +60,19 @@ if(NOT DEBUILD_EXECUTABLE OR NOT DPUT_EXECUTABLE)
   message(WARNING "Debuild or dput not installed, please run sudo apt-get install devscripts")
   return()
 endif(NOT DEBUILD_EXECUTABLE OR NOT DPUT_EXECUTABLE)
+
+
+if(NOT CPACK_DISTRIB_TARGET)
+execute_process(
+    COMMAND lsb_release -cs
+    OUTPUT_VARIABLE DISTRI
+    OUTPUT_STRIP_TRAILING_WHITESPACE)
+    set(CPACK_DISTRIB_TARGET ${DISTRI})
+    message(STATUS "CPACK_DISTRIB_TARGET NOT provided, so using system settings : ${DISTRI}")
+endif()
+
+foreach(DISTRI ${CPACK_DISTRIB_TARGET})
+message(STATUS "Building for ${DISTRI}")
 
 # Strip "-dirty" flag from package version.
 # It can be added by, e.g., git describe but it causes trouble with debuild etc.
@@ -99,13 +112,16 @@ endif()
 
 if(PPA_DEBIAN_VERSION)
   set(DEBIAN_PACKAGE_VERSION "${CPACK_PACKAGE_VERSION}-${PPA_DEBIAN_VERSION}")
-else()
+elseif(NOT PPA_DEBIAN_VERSION AND NOT CPACK_DISTRIB_TARGET)
   message(WARNING "Variable PPA_DEBIAN_VERSION not set! Building 'native' package!")
   set(DEBIAN_PACKAGE_VERSION "${CPACK_PACKAGE_VERSION}")
+else()
+  set(DEBIAN_PACKAGE_VERSION "${CPACK_PACKAGE_VERSION}~${DISTRI}1")
 endif()
+
 message(STATUS "Debian version: ${DEBIAN_PACKAGE_VERSION}")
 
-set(DEBIAN_SOURCE_DIR ${CMAKE_BINARY_DIR}/Debian/${CPACK_DEBIAN_PACKAGE_NAME}_${DEBIAN_PACKAGE_VERSION})
+set(DEBIAN_SOURCE_DIR ${CMAKE_BINARY_DIR}/Debian/${DISTRI}/${CPACK_DEBIAN_PACKAGE_NAME}_${DEBIAN_PACKAGE_VERSION})
 
 ##############################################################################
 # debian/control
@@ -290,10 +306,6 @@ if(EXISTS ${CPACK_DEBIAN_RESOURCE_FILE_CHANGELOG})
       COMMAND date -R
       OUTPUT_VARIABLE DATE_TIME
       OUTPUT_STRIP_TRAILING_WHITESPACE)
-    execute_process(
-      COMMAND lsb_release -cs
-      OUTPUT_VARIABLE DISTRI
-      OUTPUT_STRIP_TRAILING_WHITESPACE)
     file(WRITE ${debian_changelog}
       "${CPACK_DEBIAN_PACKAGE_NAME} (${DEBIAN_PACKAGE_VERSION}) ${DISTRI}; urgency=low\n\n"
       "  * ${output_changelog_msg}\n\n"
@@ -306,10 +318,6 @@ else()
   execute_process(
     COMMAND date -R
     OUTPUT_VARIABLE DATE_TIME
-    OUTPUT_STRIP_TRAILING_WHITESPACE)
-  execute_process(
-    COMMAND lsb_release -cs
-    OUTPUT_VARIABLE DISTRI
     OUTPUT_STRIP_TRAILING_WHITESPACE)
   file(WRITE ${debian_changelog}
     "${CPACK_DEBIAN_PACKAGE_NAME} (${DEBIAN_PACKAGE_VERSION}) ${DISTRI}; urgency=low\n\n"
@@ -336,9 +344,9 @@ set(CPACK_SOURCE_IGNORE_FILES
   "/packaging/"
   "*~")
 
-set(package_file_name "${CPACK_DEBIAN_PACKAGE_NAME}_${CPACK_PACKAGE_VERSION}")
+set(package_file_name "${CPACK_DEBIAN_PACKAGE_NAME}_${DEBIAN_PACKAGE_VERSION}")
 
-file(WRITE "${CMAKE_BINARY_DIR}/Debian/cpack.cmake"
+file(WRITE "${CMAKE_BINARY_DIR}/Debian/${DISTRI}/cpack.cmake"
   "set(CPACK_GENERATOR TGZ)\n"
   "set(CPACK_PACKAGE_NAME \"${CPACK_DEBIAN_PACKAGE_NAME}\")\n"
   "set(CPACK_PACKAGE_VERSION \"${CPACK_PACKAGE_VERSION}\")\n"
@@ -348,33 +356,33 @@ file(WRITE "${CMAKE_BINARY_DIR}/Debian/cpack.cmake"
   "set(CPACK_INSTALLED_DIRECTORIES \"${CPACK_SOURCE_INSTALLED_DIRECTORIES}\")\n"
   )
 
-set(orig_file "${CMAKE_BINARY_DIR}/Debian/${package_file_name}.orig.tar.gz")
+set(orig_file "${CMAKE_BINARY_DIR}/Debian/${DISTRI}/${DEBIAN_PACKAGE_VERSION}.orig.tar.gz")
 
 add_custom_command(OUTPUT ${orig_file}
-  COMMAND cpack --config ${CMAKE_BINARY_DIR}/Debian/cpack.cmake
-  WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/Debian
+  COMMAND cpack --config ${CMAKE_BINARY_DIR}/Debian/${DISTRI}/cpack.cmake
+  WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/Debian/${DISTRI}
   )
-add_custom_target(tarfile ALL DEPENDS ${orig_file})
+add_custom_target(tarfile_${DISTRI} ALL DEPENDS ${orig_file})
 ##############################################################################
 # debuild -S
 set(DEB_SOURCE_CHANGES
   ${CPACK_DEBIAN_PACKAGE_NAME}_${DEBIAN_PACKAGE_VERSION}_source.changes
   )
 
-add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/Debian/${DEB_SOURCE_CHANGES}
+add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/Debian/${DISTRI}/${DEB_SOURCE_CHANGES}
   COMMAND ${DEBUILD_EXECUTABLE} -S -sa
   WORKING_DIRECTORY ${DEBIAN_SOURCE_DIR}
   )
-add_custom_target(debuild ALL DEPENDS tarfile ${orig_file} ${CMAKE_BINARY_DIR}/Debian/${DEB_SOURCE_CHANGES} )
+add_custom_target(debuild_${DISTRI} ALL DEPENDS tarfile_${DISTRI} ${orig_file} ${CMAKE_BINARY_DIR}/Debian/${DISTRI}/${DEB_SOURCE_CHANGES} )
 ##############################################################################
 # dput ppa:your-lp-id/ppa <source.changes>
 message(STATUS "Upload PPA is ${UPLOAD_PPA}")
 if(UPLOAD_PPA)
- add_custom_target(dput ALL
+ add_custom_target(dput_${DISTRI} ALL
    COMMAND ${DPUT_EXECUTABLE} ${DPUT_HOST} ${DEB_SOURCE_CHANGES}
-   DEPENDS debuild
-   WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/Debian
+   DEPENDS debuild_${DISTRI}
+   WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/Debian/${DISTRI}
    )
 endif()
-
+endforeach(DISTRI)
 
