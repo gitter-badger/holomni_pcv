@@ -2,13 +2,13 @@ cmake_minimum_required(VERSION 2.8)
 project(holomni-pcv)
 set(LIBNAME "holomni_pcv")
 SET(MAJOR_VERSION "1")
-SET(MINOR_VERSION "2")
-SET(PATCH_VERSION "9")
+SET(MINOR_VERSION "3")
+SET(PATCH_VERSION "0")
 set(M3CORE_VERSION
   ${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION})
-  
+
 # Options
-set(DCMAKE_BUILD_TYPE "Release")
+set(CMAKE_BUILD_TYPE "Release")
 set(CMAKE_CXX_FLAGS_DEBUG "-O0 -ggdb")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 
@@ -27,9 +27,14 @@ OPTION(UPLOAD_PPA "Enable PPA upload" FALSE)
 OPTION(CHANGELOG_MESSAGE "Set the changelog message" OFF)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
+
+if(UPLOAD_PPA AND NOT ENABLE_PPA)
+set(ENABLE_PPA 1)
+endif()	
+
 if(NOT ENABLE_PPA)
 add_subdirectory(src)
-endif()
+else()
 ######## Debian #######
 
 #### Package Generation
@@ -72,8 +77,8 @@ set(CPACK_DEBIAN_PACKAGE_BUILD_DEPENDS cmake bzr git pkg-config devscripts libya
 set(CPACK_DEBIAN_PACKAGE_DEPENDS libyaml-cpp-dev)
 #SET(CPACK_DEBIAN_PACKAGE_DEPENDS "python2.7,swig,moc,libeigen3-dev,libprotobuf-dev,protobuf-compiler,libboost-dev,python-dev,python-protobuf,python-matplotlib,python-yaml,python-gnuplot,python-scipy,python-sip-dev,python-sip")
 
-set(CPACK_DISTRIB_TARGET "utopic" "trusty" "saucy" "raring" "quantal")
- # See ~/.dput.cd
+set(CPACK_DISTRIB_TARGET "utopic" "trusty" "precise")
+ # See ~/.dput.cf
 set(DPUT_HOST hoarau-robotics)
 set(CPACK_DEBIAN_UPDATE_CHANGELOG TRUE)
 #SET(CPACK_DEBIAN_PACKAGE_PRIORITY "optional")
@@ -87,4 +92,5 @@ if(ENABLE_PPA OR UPLOAD_PPA)
 endif()
 
 ENDIF(EXISTS "${CMAKE_ROOT}/Modules/CPack.cmake")
+endif()
 endif()
