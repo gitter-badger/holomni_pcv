@@ -1,5 +1,7 @@
 ###The Holomni library 
 
+[![Join the chat at https://gitter.im/ahoarau/holomni_pcv](https://badges.gitter.im/ahoarau/holomni_pcv.svg)](https://gitter.im/ahoarau/holomni_pcv?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 This library is used to control the B1 base of the Meka robot at Ensta ParisTech
 
 > Changelog : 
